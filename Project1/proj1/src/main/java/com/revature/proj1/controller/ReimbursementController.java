@@ -9,12 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import com.revature.proj1.dto.response.JwtResponse;
 import com.revature.proj1.dto.response.ReimbursementResponse;
-import com.revature.proj1.dto.response.UserResponse;
 import com.revature.proj1.entity.Reimbursement;
 import com.revature.proj1.entity.User;
-import com.revature.proj1.exception.InsufficientPrivilegesException;
 import com.revature.proj1.service.JwtAuthService;
 import com.revature.proj1.service.ReimbursementService;
 import com.revature.proj1.service.UserService;
@@ -33,25 +30,6 @@ public class ReimbursementController {
         this.jwtAuthService = jwtAuthService;
     }
 
-    @PostMapping("register")
-    @ResponseBody
-    public ResponseEntity<UserResponse> postNewUser(@RequestBody User user){
-        User createdUser = userService.createUser(user);
-        UserResponse userDto = new UserResponse(createdUser);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userDto);
-    }
-
-    @PostMapping("login")
-    public ResponseEntity<JwtResponse> loginUser(@RequestBody User user){
-        user = userService.loginUserExists(user);
-        String jwt = jwtAuthService.jwtBuilder(user);
-        JwtResponse jwtR = new JwtResponse(jwt);
-        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(jwtR);
-    }
 
     @PostMapping(value="reimbursement-list/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReimbursementResponse> createReimbursement(@RequestHeader(name="authorization") String token, @RequestBody Reimbursement reimbursement){
@@ -148,34 +126,4 @@ public class ReimbursementController {
             .body(reimbDto);
     }
 
-    @GetMapping("admin/users")
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestHeader (name="Authorization") String token){
-        String strId = jwtAuthService.jwtGetId(token);
-        int userId = Integer.parseInt(strId);
-
-        if(!jwtAuthService.isAdmin(token)) throw new InsufficientPrivilegesException("Error: you do not have administrator privileges.");
-
-        List<User> userList = userService.getAllUsers(userId);
-        List<UserResponse> userDtoList = new ArrayList();
-
-        for(User user : userList){
-            userDtoList.add(new UserResponse(user));
-        }
-
-        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(userDtoList);
-    }
-    @DeleteMapping("admin/users")
-    public ResponseEntity<UserResponse> deleteUser(@RequestHeader (name="Authorization") String token, @RequestBody User user){
-
-        if(!jwtAuthService.isAdmin(token)) throw new InsufficientPrivilegesException("Error: you do not have administrator privileges.");
-
-        User deletedUser = userService.deleteUser(user);
-        UserResponse userDto = new UserResponse(deletedUser);
-
-        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(userDto);
-    }
 }
