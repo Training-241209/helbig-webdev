@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.proj1.entity.User;
 
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -32,7 +29,7 @@ public class JwtAuthService {
         .audience().add(user.getRole().getRole()).and()
         .expiration(new Date(System.currentTimeMillis() + 1000 * 60))
         .signWith(key());
-
+        
         return jwt.compact();
     }
 
@@ -55,11 +52,11 @@ public class JwtAuthService {
                 .getIssuer();
     }
 
-    public String jwtGetRole(String jwtCompact){
+    public boolean isAdmin(String jwtCompact){
         Set<String> role = Jwts.parser().verifyWith((SecretKey)key())
             .build().parseSignedClaims(jwtCompact)
             .getPayload()
             .getAudience();
-        return role.contains("admin") ? "admin" : "employee";
+        return role.contains("admin");
     }
 }

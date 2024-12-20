@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.revature.proj1.entity.Reimbursement;
 import com.revature.proj1.entity.User;
+import com.revature.proj1.exception.InsufficientPrivilegesException;
+import com.revature.proj1.exception.InvalidArgumentException;
+import com.revature.proj1.exception.UserDoesNotExistException;
 import com.revature.proj1.repository.ReimbursementRepository;
 
 @Service
@@ -34,21 +37,23 @@ public class ReimbursementService {
 
     public List<Reimbursement> getReimbursementsAdmin(boolean admin){
         if(admin) return reimbursementRepository.findAll();
-        throw new RuntimeException();
+        throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
     }
     public List<Reimbursement> getPendingReimbursementsAdmin(boolean admin){
         if(admin) return reimbursementRepository.findByStatus("pending");
-        throw new RuntimeException();
+        throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
     }
 
     public Reimbursement patchStatus(boolean admin, Reimbursement reimbursement){
-        if(!admin) throw new RuntimeException();
-        if(!(reimbursement.getStatus().equalsIgnoreCase("accepted") || reimbursement.getStatus().equalsIgnoreCase("denied"))){
-            throw new RuntimeException();
+        if(!admin) throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
+        if(!(reimbursement.getStatus().equalsIgnoreCase("accepted")
+         || reimbursement.getStatus().equalsIgnoreCase("denied")
+         || reimbursement.getStatus().equalsIgnoreCase("pending"))){
+            throw new InvalidArgumentException("Error: invalid input, reimbursement status can be accepted, pending, or denied");
         }
         Optional<Reimbursement> optionalReimb = reimbursementRepository.findById(reimbursement.getRembId());
         if(optionalReimb.isEmpty()){
-            throw new RuntimeException();
+            throw new UserDoesNotExistException("Error: User not found.");
         }
         Reimbursement patchedReimb = optionalReimb.get();
         patchedReimb.setStatus(reimbursement.getStatus());
@@ -56,4 +61,5 @@ public class ReimbursementService {
         return reimbursementRepository.save(patchedReimb);
 
     }
+
 }

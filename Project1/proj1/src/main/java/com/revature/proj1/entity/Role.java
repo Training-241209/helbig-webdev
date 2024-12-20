@@ -1,6 +1,5 @@
 package com.revature.proj1.entity;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
