@@ -44,7 +44,7 @@ Axios - Library for making HTTP requests to backend
 
 
 ## Entity Relational Diagram
-<img src="./Project1_erd.png>
+<img src="Project1_erd.png">
 
 ## Challenges
 * Creating complicated tables with components coupled to each row requires TanStack Table (or something like it), which has a sharp learning curve.
