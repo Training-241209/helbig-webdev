@@ -34,13 +34,13 @@ PostGreSQL server
 
 ### Frontend
 
-React - A library for web dev in JavaScript, TypeScript, and many other languages. React gives use componeents which makes parts of writing UI code more simple and scalable.
-TypeScript - A superset of JavaScript that is strongly typed, enforcing type safety earlier in the development life cycle compared to JavaScript. Typescript also gives us additional functionality like interfaces and can be run anywhere that JavaScript can.
-TailwindCSS - A framework for writing CSS directly in React components. Tailwind makes styling far easier since styles are directly in your code.
-TanStack Table - Library that makes building complex tables easy
-TanStack Router - A library that helps with creating links and redirects between components and pages
-TanStack Query - Makes it easy to store the primitive and object-oriented results of HTTP CRUD responses
-Axios - Library for making HTTP requests to backend
+* React - A library for web dev in JavaScript, TypeScript, and many other languages. React gives use componeents which makes parts of writing UI code more simple and scalable.
+* TypeScript - A superset of JavaScript that is strongly typed, enforcing type safety earlier in the development life cycle compared to JavaScript. Typescript also gives us additional functionality like interfaces and can be run anywhere that JavaScript can.
+* TailwindCSS - A framework for writing CSS directly in React components. Tailwind makes styling far easier since styles are directly in your code.
+* TanStack Table - Library that makes building complex tables easy
+* TanStack Router - A library that helps with creating links and redirects between components and pages
+* TanStack Query - Makes it easy to store the primitive and object-oriented results of HTTP CRUD responses
+* Axios - Library for making HTTP requests to backend
 
 
 ## Entity Relationship Diagram
