@@ -43,7 +43,7 @@ TanStack Query - Makes it easy to store the primitive and object-oriented result
 Axios - Library for making HTTP requests to backend
 
 
-## Entity Relational Diagram
+## Entity Relationship Diagram
 <img src="Project1_erd.png">
 
 ## Challenges
