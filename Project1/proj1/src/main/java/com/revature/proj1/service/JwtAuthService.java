@@ -27,7 +27,7 @@ public class JwtAuthService {
         .type("JWT").and()
         .issuer(Long.toString(user.getUserId()))
         .audience().add(user.getRole().getRole()).and()
-        .expiration(new Date(System.currentTimeMillis() + 1000 * 60))
+        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
         .signWith(key());
         
         return jwt.compact();
@@ -37,14 +37,16 @@ public class JwtAuthService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    // public void jwtVerification(String jwtCompact){
-    //     Jwts.parser()
-    //     .verifyWith((SecretKey)key())
-    //     .build()
-    //     .parse(jwtCompact);
-    // }
+    public void jwtVerification(String jwtCompact){
+        //jwtCompact = jwtCompact.substring(7);
+        Jwts.parser()
+        .verifyWith((SecretKey)key())
+        .build()
+        .parse(jwtCompact);
+    }
 
     public String jwtGetId(String jwtCompact){
+        //jwtCompact = jwtCompact.substring(7);
         return Jwts.parser()
                 .verifyWith((SecretKey)key())
                 .build().parseSignedClaims(jwtCompact)
@@ -53,6 +55,7 @@ public class JwtAuthService {
     }
 
     public boolean isAdmin(String jwtCompact){
+        //jwtCompact = jwtCompact.substring(7);
         Set<String> role = Jwts.parser().verifyWith((SecretKey)key())
             .build().parseSignedClaims(jwtCompact)
             .getPayload()

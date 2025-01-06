@@ -19,7 +19,7 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler(UserDoesNotExistException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody String handleUserDoesNotExistException(UserDoesNotExistException ex){
         return ex.getMessage();
     }

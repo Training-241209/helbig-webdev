@@ -9,12 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtResponse {
-    private String jwt;
+    private String authorization;
 
     public JwtResponse(){
     }
 
-    public JwtResponse(String jwt){
-        this.jwt = jwt;
+    public JwtResponse(String authorization){
+        this.authorization = authorization;
     }
 }

@@ -63,4 +63,16 @@ public class UserService {
         return optUser.get();
         
     }
+
+    public User promoteToManager(User user){
+        int userId = user.getUserId().intValue();
+        Optional<User> optUser = userRepository.findById(userId);
+        if(optUser.isEmpty()){
+            throw new UserDoesNotExistException("Error: Cannot delete non-existent user.");
+        }
+        User userManager= optUser.get();
+        userManager.setRole(new Role("admin"));
+        userRepository.save(userManager);
+        return userManager;
+    }
 }

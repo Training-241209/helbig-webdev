@@ -35,12 +35,34 @@ public class ReimbursementService {
         return reimbursementRepository.findByIdUserFkAndStatus(userId, "pending");
     }
 
+    public Reimbursement patchAmountAndDescription(Reimbursement reimb){
+        int reimbId = reimb.getRembId();
+        Optional<Reimbursement> optReimb = reimbursementRepository.findById(reimbId);
+        if(optReimb.isEmpty()){
+            throw new RuntimeException("Error: Reimbursement does not exist.");
+        }
+        Reimbursement updatedReimb = optReimb.get();
+        updatedReimb.setAmount(reimb.getAmount());
+        updatedReimb.setDescription(reimb.getDescription());
+        return updatedReimb;
+    }
+
+    /*
+     * ADMIN
+     */
+
     public List<Reimbursement> getReimbursementsAdmin(boolean admin){
         if(admin) return reimbursementRepository.findAll();
         throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
     }
+
     public List<Reimbursement> getPendingReimbursementsAdmin(boolean admin){
         if(admin) return reimbursementRepository.findByStatus("pending");
+        throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
+    }
+
+    public List<Reimbursement> getResolvedReimbursementsAdmin(boolean admin){
+        if(admin) return reimbursementRepository.findByStatusNot("pending");
         throw new InsufficientPrivilegesException("Error: Insufficient Privileges.");
     }
 

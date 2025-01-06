@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import com.revature.proj1.dto.response.UserResponse;
@@ -59,5 +60,16 @@ public class UserController {
             .body(userDto);
     }
 
+    @PatchMapping("admin/users")
+    public ResponseEntity<UserResponse> promoteToManager(@RequestHeader (name="Authorization") String token, @RequestBody User user){
+        if(!jwtAuthService.isAdmin(token)) throw new InsufficientPrivilegesException("Error: you do not have administrator privileges.");
+
+        User promotedUser = userService.promoteToManager(user);
+        UserResponse userDto = new UserResponse(promotedUser);
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(userDto);
+    }
 
 }

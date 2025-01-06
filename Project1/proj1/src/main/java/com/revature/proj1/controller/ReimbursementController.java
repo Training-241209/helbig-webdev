@@ -31,7 +31,7 @@ public class ReimbursementController {
     }
 
 
-    @PostMapping(value="reimbursement-list/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="user/reimbursement-list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReimbursementResponse> createReimbursement(@RequestHeader(name="authorization") String token, @RequestBody Reimbursement reimbursement){
         String strId =  jwtAuthService.jwtGetId(token);
         int userId = Integer.parseInt(strId);
@@ -44,7 +44,7 @@ public class ReimbursementController {
             .body(reimbursementDto);
     }
 
-    @GetMapping(value="reimbursement-list/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="user/reimbursement-list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ReimbursementResponse>> getReimbursements(@RequestHeader (name="authorization") String token){
         String strId = jwtAuthService.jwtGetId(token);
         int userId = Integer.parseInt(strId);
@@ -78,14 +78,26 @@ public class ReimbursementController {
             .body(reimbDtoList);
     }
 
+    @PatchMapping
+    public ResponseEntity<ReimbursementResponse> patchAmountAndDescription(@RequestHeader (name="Authorization") String token, @RequestBody Reimbursement reimb){
+        Integer.parseInt(jwtAuthService.jwtGetId(token));
+
+        Reimbursement updatedReimb = reimbursementService.patchAmountAndDescription(reimb);
+        ReimbursementResponse reimbDto = new ReimbursementResponse(updatedReimb);
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(reimbDto);
+    }
+
 
     /*
      * ADMINISTRATOR ONLY
      */
 
-    @GetMapping("reimbursement-list/admin")
+    @GetMapping("admin/reimbursement-list")
     @ResponseBody
-    public ResponseEntity<List<ReimbursementResponse>> getPendingReimbursementsAdmin(@RequestHeader (name="Authorization") String token){
+    public ResponseEntity<List<ReimbursementResponse>> getReimbursementsAdmin(@RequestHeader (name="Authorization") String token){
 
         List<Reimbursement> reimbList = reimbursementService.getReimbursementsAdmin(jwtAuthService.isAdmin(token));
         List<ReimbursementResponse> reimbDtoList = new ArrayList();
@@ -99,8 +111,8 @@ public class ReimbursementController {
             .body(reimbDtoList);
     }
 
-    @GetMapping("reimbursement-list/admin/pending")
-    public ResponseEntity<List<ReimbursementResponse>> getReimbursementsAdmin(@RequestHeader (name="Authorization") String token){
+    @GetMapping("admin/reimbursement-list/pending")
+    public ResponseEntity<List<ReimbursementResponse>> getPendingReimbursementsAdmin(@RequestHeader (name="Authorization") String token){
 
         List<Reimbursement> reimbList = reimbursementService.getPendingReimbursementsAdmin(jwtAuthService.isAdmin(token));
         List<ReimbursementResponse> reimbDtoList = new ArrayList();
@@ -114,7 +126,22 @@ public class ReimbursementController {
             .body(reimbDtoList);
     }
 
-    @PatchMapping("reimbursement-list/admin/pending")
+    @GetMapping("admin/reimbursement-list/resolved")
+    public ResponseEntity<List<ReimbursementResponse>> getResolvedReimbursementsAdmin(@RequestHeader (name="Authorization") String token){
+
+        List<Reimbursement> reimbList = reimbursementService.getResolvedReimbursementsAdmin(jwtAuthService.isAdmin(token));
+        List<ReimbursementResponse> reimbDtoList = new ArrayList();
+
+        for(Reimbursement reimb : reimbList){
+            reimbDtoList.add(new ReimbursementResponse(reimb));
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(reimbDtoList);
+    }
+
+    @PatchMapping("admin/reimbursement-list")
     public ResponseEntity<ReimbursementResponse> updateStatus(@RequestHeader (name="Authorization") String token, @RequestBody Reimbursement reimbursement){
         boolean admin = jwtAuthService.isAdmin(token);
 

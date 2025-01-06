@@ -3,8 +3,10 @@ package com.revature.proj1.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.revature.proj1.dto.response.JwtResponse;
@@ -24,7 +26,7 @@ public class AuthController {
         this.jwtAuthService = jwtAuthService;
     }
 
-    @PostMapping("register")
+    @PostMapping("auth/register")
     @ResponseBody
     public ResponseEntity<UserResponse> postNewUser(@RequestBody User user){
         User createdUser = userService.createUser(user);
@@ -34,7 +36,7 @@ public class AuthController {
                 .body(userDto);
     }
 
-    @PostMapping("login")
+    @PostMapping("auth/login")
     public ResponseEntity<JwtResponse> loginUser(@RequestBody User user){
         user = userService.loginUserExists(user);
         String jwt = jwtAuthService.jwtBuilder(user);
@@ -43,4 +45,24 @@ public class AuthController {
             .contentType(MediaType.APPLICATION_JSON)
             .body(jwtR);
     }
+
+    @GetMapping("auth/me")
+    public ResponseEntity<JwtResponse> verifyJwt(@RequestHeader (name="Authorization") String token){
+        jwtAuthService.jwtVerification(token);
+        JwtResponse jwtR = new JwtResponse(token);
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(jwtR);
+        
+    }
+
+    @GetMapping("admin/me")
+    public ResponseEntity<Boolean> verifyAdmin(@RequestHeader (name="Authorization") String token){
+        boolean admin = jwtAuthService.isAdmin(token);
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(admin);
+    }
+
+    
 }

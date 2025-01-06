@@ -20,4 +20,6 @@ public interface ReimbursementRepository extends JpaRepository<Reimbursement, In
 
     @Query("SELECT * FROM reimbursement WHERE \"status\" = \':status\'")
     List<Reimbursement> findByStatus(String status);
+
+    List<Reimbursement> findByStatusNot(String status);
 }
